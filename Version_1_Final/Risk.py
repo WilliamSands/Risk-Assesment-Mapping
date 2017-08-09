@@ -3,12 +3,12 @@ from arcpy import env
 
 arcpy.env.overwriteOutput = True
 # Set File workspace
-file_workspace = 'B:\\Risk\\Risk.gdb'
+file_workspace = 'D:\\PCO.gdb\\Risk_PCO'
 env.workspace = file_workspace
 
 # buffer set up
-Holdings = 'B:\\Risk\\Risk.gdb\\Holdings\\Holdings_Join'
-Holdings_clip = 'B:\\Risk\\Risk.gdb\\Holdings\\Holdings'
+Holdings = 'D:\\PCO.gdb\\Risk_PCO\\Baits_Issued'
+Holdings_clip = 'D:\\PCO.gdb\\Risk_PCO\\FARMS_CLIPPED'
 distances = [1000, 4000]
 unit = "Meters"
 # Make a feature layer
@@ -48,7 +48,7 @@ with arcpy.da.SearchCursor(Holdings, ['Holding_Reference_Number'])as Holdings_Re
         Dissolved_output_intersect = file_workspace + '\\' 'Intersect_Dissolve_' + str(row[0])
         Dissolve_fields_intersect = ['Holding_Name', 'distance']
 
-        arcpy.Dissolve_management(Intersect_out_features, Dissolved_output_intersect, Dissolve_fields_intersect)
+       # arcpy.Dissolve_management(Intersect_out_features, Dissolved_output_intersect, Dissolve_fields_intersect)
         #print "intersect Complete"
 
         Clip_output = file_workspace + '\\' 'Clip_' + str(row[0])
@@ -56,7 +56,7 @@ with arcpy.da.SearchCursor(Holdings, ['Holding_Reference_Number'])as Holdings_Re
         Dissolve_fields = ['Holding_Name']
         Dissolved_output = file_workspace + '\\' 'Dissolve_' + str(row[0])
         # print Dissolved_output
-        arcpy.Dissolve_management(Clip_output, Dissolved_output, Dissolve_fields)
+        #arcpy.Dissolve_management(Clip_output, Dissolved_output, Dissolve_fields)
 
 
 
@@ -68,7 +68,7 @@ with arcpy.da.SearchCursor(Holdings, ['Holding_Reference_Number'])as Holdings_Re
         Intersect_Selection_Excel = 'distance = 1000'
         #print Intersect_Selection_Excel
         arcpy.SelectLayerByAttribute_management('Intersect_Layer', 'NEW_SELECTION', Intersect_Selection_Excel)
-        Excel_Output = 'B:\\Risk\\Map_Output\\'
+        Excel_Output = 'D:\\PCO\\Map_Output\\'
         Excel_Location = Excel_Output + '\\' + str(row[0]) + '.xls'
         #print Excel_Location
         arcpy.TableToExcel_conversion('Intersect_Layer', Excel_Location)
@@ -77,7 +77,7 @@ with arcpy.da.SearchCursor(Holdings, ['Holding_Reference_Number'])as Holdings_Re
 
         # add Layers to the Map
         mxd = arcpy.mapping.MapDocument(
-            'N:\\GIS\Projects\\AA_Leith_Hawkins_TestBed\\Search_Cursor\\Search_Cursor_mxd.mxd')
+            'D:\\PCO\\MXD\\Search_Cursor_mxd.mxd')
         df = arcpy.mapping.ListDataFrames(mxd, "Layers")[0]
         legend = arcpy.mapping.ListLayoutElements(mxd, "LEGEND_ELEMENT", "Legend")[0]
         #print legend
@@ -125,7 +125,7 @@ with arcpy.da.SearchCursor(Holdings, ['Holding_Reference_Number'])as Holdings_Re
 
 
         # Export Map to PNG File
-        Png_output = 'B:\\Risk\\Map_Output\\' + str(row[0]) + '.png'
+        Png_output = 'D:\\PCO\\Map_Output\\' + str(row[0]) + '.png'
         arcpy.mapping.ExportToPNG(mxd, Png_output)
         #print 'Map Created'
         del mxd
